@@ -1,0 +1,29 @@
+steam_api64.dll
+steam_appid.txt
+ProjectSettings/
+Temp/
+UnityPackageManager/
+Library/
+build/
+Assets/*
+!Assets/Modules/
+Assets/Modules/*
+!Assets/Modules.meta
+Manual/Template Manual.html
+Manual/css/
+Manual/font/
+Manual/img/*
+!Manual/img/Modules/
+Manual/img/Modules/*
+Manual/js/
+Manual/pdfs/
+Assembly-CSharp*
+/*.sln
+obj/
+Models/*
+
+# ColorsMaximization
+!Assets/Modules/ColorsMaximization.meta
+!Assets/Modules/ColorsMaximization
+!Manual/img/Modules/ColorsMaximization/
+!Models/ColorsMaximization.blend
