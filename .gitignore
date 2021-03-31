@@ -21,8 +21,8 @@ Manual/Template Manual.html
 Manual/css/
 Manual/font/
 Manual/img/*
-!Manual/img/Modules/
-Manual/img/Modules/*
+!Manual/img/Component/
+Manual/img/Component/*
 Manual/js/
 Assembly-CSharp*
 /*.sln
@@ -32,5 +32,5 @@ Models/*
 # ColorsMaximization
 !Assets/Modules/ColorsMaximization.meta
 !Assets/Modules/ColorsMaximization
-!Manual/img/Modules/ColorsMaximization/
+!Manual/img/Component/ColorsMaximization.svg
 !Models/ColorsMaximization.blend
