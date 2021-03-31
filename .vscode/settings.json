@@ -10,7 +10,6 @@
 	"files.exclude": {
 		"steam_api64.dll": true,
 		"steam_appid.txt": true,
-		"Assets/[^(Modules)]*": true,
 		"ProjectSettings": true,
 		"Library": true,
 		"build": true,
@@ -28,6 +27,8 @@
 		"**/*.prefab": true,
 		"**/*.meta": true,
 		"**/*.mat": true,
-		"**/*.fbx": true
+		"**/*.fbx": true,
+		"**/*.unity": true,
+		"**/*.dll": true
 	}
 }

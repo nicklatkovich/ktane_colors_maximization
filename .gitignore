@@ -6,9 +6,17 @@ UnityPackageManager/
 Library/
 build/
 Assets/*
+
+!Assets/Editor.meta
+!Assets/Editor/
+Assets/Editor/*
+!Assets/Editor/Resources.meta
+!Assets/Editor/Resources/
+
+!Assets/Modules.meta
 !Assets/Modules/
 Assets/Modules/*
-!Assets/Modules.meta
+
 Manual/Template Manual.html
 Manual/css/
 Manual/font/
@@ -16,7 +24,6 @@ Manual/img/*
 !Manual/img/Modules/
 Manual/img/Modules/*
 Manual/js/
-Manual/pdfs/
 Assembly-CSharp*
 /*.sln
 obj/
