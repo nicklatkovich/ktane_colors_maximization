@@ -130,6 +130,7 @@ GameObject:
   - component: {fileID: 114448980960861612}
   - component: {fileID: 114119111285345498}
   - component: {fileID: 114636403854835216}
+  - component: {fileID: 114612393847298776}
   m_Layer: 0
   m_Name: ColorsMaximization
   m_TagString: Untagged
@@ -212,13 +213,13 @@ Transform:
   m_LocalPosition: {x: -0.02, y: 0, z: 0.05}
   m_LocalScale: {x: 1.5, y: 1, z: 1.5}
   m_Children:
+  - {fileID: 4650871327806856}
   - {fileID: 4403871689147232}
   - {fileID: 4663577990783422}
   - {fileID: 4628452366519146}
-  - {fileID: 4650871327806856}
   - {fileID: 4586426158746604}
   m_Father: {fileID: 4947425957915972}
-  m_RootOrder: 4
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4317779090230850
 Transform:
@@ -231,7 +232,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4947425957915972}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4403871689147232
 Transform:
@@ -244,7 +245,7 @@ Transform:
   m_LocalScale: {x: 1, y: 3, z: 1}
   m_Children: []
   m_Father: {fileID: 4060451763993576}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 90}
 --- !u!4 &4586426158746604
 Transform:
@@ -270,7 +271,7 @@ Transform:
   m_LocalScale: {x: 0.05, y: 0.02, z: 0.022}
   m_Children: []
   m_Father: {fileID: 4060451763993576}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: -180, z: 0}
 --- !u!4 &4650871327806856
 Transform:
@@ -283,7 +284,7 @@ Transform:
   m_LocalScale: {x: 0.0015, y: 0.0015, z: 0}
   m_Children: []
   m_Father: {fileID: 4060451763993576}
-  m_RootOrder: 3
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 89.980194, y: -180, z: 0}
 --- !u!4 &4663577990783422
 Transform:
@@ -296,7 +297,7 @@ Transform:
   m_LocalScale: {x: 5, y: 1, z: 2}
   m_Children: []
   m_Father: {fileID: 4060451763993576}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4681561882845050
 Transform:
@@ -309,7 +310,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4947425957915972}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4767184386335972
 Transform:
@@ -322,7 +323,7 @@ Transform:
   m_LocalScale: {x: 1.2, y: 1, z: 1.2}
   m_Children: []
   m_Father: {fileID: 4947425957915972}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4836819678689248
 Transform:
@@ -335,7 +336,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4947425957915972}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!4 &4947425957915972
 Transform:
@@ -347,11 +348,11 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0.25}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 4060451763993576}
   - {fileID: 4317779090230850}
   - {fileID: 4836819678689248}
   - {fileID: 4681561882845050}
   - {fileID: 4767184386335972}
-  - {fileID: 4060451763993576}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -672,6 +673,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShaderNames:
   - KT/Mobile/DiffuseTint
+--- !u!114 &114612393847298776
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1630598334684888}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1cfb889a07d5fd4e9baed7960bb397f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _colorblindMode: 0
 --- !u!114 &114636403854835216
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -688,7 +701,9 @@ MonoBehaviour:
   submitButton: {fileID: 114401175276266382}
   buttonsCollection: {fileID: 1708746245527062}
   KMAudio: {fileID: 114119111285345498}
+  submitText: {fileID: 102225970408690444}
   bomb: {fileID: 114448980960861612}
+  colorblindMode: {fileID: 114612393847298776}
 --- !u!114 &114664971240673866
 MonoBehaviour:
   m_ObjectHideFlags: 1

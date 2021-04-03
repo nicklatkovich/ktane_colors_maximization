@@ -5,23 +5,7 @@ using UnityEngine;
 using KModkit;
 
 public class ColorsMaximizationModule : MonoBehaviour {
-	private static int _moduleIdCounter = 1;
-
-	public ButtonComponent buttonPrefab;
-	public KMSelectable submitButton;
-	public GameObject buttonsCollection;
-	public KMAudio KMAudio;
-	public KMBombInfo bomb;
-
-	public const int WIDTH = 5;
-	public const int HEIGHT = 4;
-	public const string TwitchHelpMessage = (
-		"`!{0} a1 2;2 15 submit` to press buttons by coordinates, number in reading order or button with label `submit`"
-	);
-
-	private bool _passed = false;
-	private int _moduleId;
-	private readonly Color[] _allColors = {
+	public static readonly Color[] allColors = {
 		Color.red,
 		Color.green,
 		Color.blue,
@@ -29,7 +13,8 @@ public class ColorsMaximizationModule : MonoBehaviour {
 		Color.yellow,
 		Color.white,
 	};
-	private readonly Color[][] _rules = {
+
+	public static readonly Color[][] rules = {
 		new Color[] { Color.red, Color.green, Color.blue, Color.magenta, Color.yellow, Color.white },
 		new Color[] { Color.green, Color.red, Color.yellow, Color.magenta, Color.blue, Color.white },
 		new Color[] { Color.white, Color.blue, Color.red, Color.green, Color.magenta, Color.yellow },
@@ -37,10 +22,8 @@ public class ColorsMaximizationModule : MonoBehaviour {
 		new Color[] { Color.magenta, Color.yellow, Color.white, Color.green, Color.red, Color.blue },
 		new Color[] { Color.white, Color.yellow, Color.magenta, Color.blue, Color.green, Color.red },
 	};
-	private List<ButtonComponent> _buttons = new List<ButtonComponent>();
-	private ButtonComponent[][] _buttonsGrid = new ButtonComponent[0][] { };
-	private Dictionary<Color, int> _countOfColor = new Dictionary<Color, int>();
-	private Dictionary<Color, string> _colorPrettier = new Dictionary<Color, string> {
+
+	public static readonly Dictionary<Color, string> colorsName = new Dictionary<Color, string> {
 		{ Color.red, "Red" },
 		{ Color.green, "Green" },
 		{ Color.blue, "Blue" },
@@ -49,10 +32,46 @@ public class ColorsMaximizationModule : MonoBehaviour {
 		{ Color.white, "White" },
 	};
 
+	private static int _moduleIdCounter = 1;
+
+	public const int WIDTH = 5;
+	public const int HEIGHT = 4;
+
+	public readonly string TwitchHelpMessage = string.Join(" | ", new string[] {
+		"`!{0} a1 2;2 15 submit` - press buttons on coordinates, by number in reading order or with label `submit`",
+		"`!{0} colorblind` enable/disable colorblind mode",
+	});
+
+	public ButtonComponent buttonPrefab;
+	public KMSelectable submitButton;
+	public GameObject buttonsCollection;
+	public KMAudio KMAudio;
+	public TextMesh submitText;
+	public KMBombInfo bomb;
+	public KMColorblindMode colorblindMode;
+
+	private bool _colorblindModeEnabled = false;
+	public bool colorblindModeEnabled {
+		get { return _colorblindModeEnabled; }
+		set {
+			if (value == _colorblindModeEnabled) return;
+			_colorblindModeEnabled = value;
+			_buttons.ForEach(b => b.colorblindMode = value);
+			submitText.color = value ? Color.white : Color.red;
+		}
+	}
+
+	private bool _passed = false;
+	private int _moduleId;
+	private List<ButtonComponent> _buttons = new List<ButtonComponent>();
+	private ButtonComponent[][] _buttonsGrid = new ButtonComponent[0][] { };
+	private Dictionary<Color, int> _countOfColor = new Dictionary<Color, int>();
+
 	private void Start() {
+		colorblindModeEnabled = colorblindMode.ColorblindModeActive;
 		_moduleId = _moduleIdCounter++;
 		KMSelectable selfSelectable = GetComponent<KMSelectable>();
-		foreach (Color color in _allColors) _countOfColor[color] = 0;
+		foreach (Color color in allColors) _countOfColor[color] = 0;
 		List<KMSelectable> children = new List<KMSelectable>();
 		HashSet<Color> colorsActiveAtStart = getHalfRandomColors();
 		_buttonsGrid = new ButtonComponent[WIDTH][];
@@ -64,10 +83,11 @@ public class ColorsMaximizationModule : MonoBehaviour {
 				button.transform.localPosition = new Vector3(x * 0.02f, 0.015f, (HEIGHT - z - 1) * 0.02f);
 				button.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
 				button.transform.localEulerAngles = Vector3.zero;
-				Color color = _allColors[Random.Range(0, _allColors.Length)];
+				Color color = allColors[Random.Range(0, allColors.Length)];
 				button.primaryColor = color;
 				_countOfColor[color] += 1;
 				button.active = colorsActiveAtStart.Contains(color);
+				button.colorblindMode = colorblindMode.ColorblindModeActive;
 				_buttons.Add(button);
 				KMSelectable selectableButton = button.GetComponent<KMSelectable>();
 				selectableButton.OnInteract += () => OnButtonPressed(button);
@@ -76,8 +96,8 @@ public class ColorsMaximizationModule : MonoBehaviour {
 				_buttonsGrid[x][z] = button;
 			}
 		}
-		foreach (Color color in _allColors) {
-			string prettier = _colorPrettier[color];
+		foreach (Color color in allColors) {
+			string prettier = colorsName[color];
 			int count = _countOfColor[color];
 			Debug.LogFormat("[Colors Maximization #{0}] {1} color count = {2}", _moduleId, prettier, count);
 		}
@@ -100,6 +120,10 @@ public class ColorsMaximizationModule : MonoBehaviour {
 
 	public KMSelectable[] ProcessTwitchCommand(string command) {
 		command = command.Trim().ToLower();
+		if (command == "colorblind") {
+			colorblindModeEnabled = !colorblindModeEnabled;
+			return new KMSelectable[0];
+		}
 		KMSelectable[] parsedCoords = parseButtonsSet(command);
 		if (parsedCoords != null) return parsedCoords;
 		return null;
@@ -116,9 +140,9 @@ public class ColorsMaximizationModule : MonoBehaviour {
 
 	public Color[] useRule(int ruleNumber) {
 		Debug.LogFormat("[Colors Maximization #{0}] Using rule #{1}", _moduleId, ruleNumber);
-		Color[] result = _rules[ruleNumber - 1];
+		Color[] result = rules[ruleNumber - 1];
 		for (int i = 0; i < result.Length; i++) {
-			string prettier = _colorPrettier[result[i]];
+			string prettier = colorsName[result[i]];
 			Debug.LogFormat("[Colors Maximization #{0}] {1} color score = {2}", _moduleId, prettier, i + 1);
 		}
 		return result;
@@ -126,7 +150,7 @@ public class ColorsMaximizationModule : MonoBehaviour {
 
 	public HashSet<Color> getHalfRandomColors() {
 		HashSet<Color> result = new HashSet<Color>();
-		Color[] colors = _allColors.Clone() as Color[];
+		Color[] colors = allColors.Clone() as Color[];
 		for (int i = 0; i < colors.Length; i++) {
 			int pos = Random.Range(0, colors.Length - 1);
 			Color tmp = colors[i];
