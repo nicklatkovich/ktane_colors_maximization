@@ -81,7 +81,7 @@ public class ColorsMaximizationModule : MonoBehaviour {
 				ButtonComponent button = Instantiate(buttonPrefab);
 				button.transform.parent = buttonsCollection.transform;
 				button.transform.localPosition = new Vector3(x * 0.02f, 0.015f, (HEIGHT - z - 1) * 0.02f);
-				button.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
+				button.transform.localScale = new Vector3(0.0101f, 0.01f, 0.0101f);
 				button.transform.localEulerAngles = Vector3.zero;
 				Color color = allColors[Random.Range(0, allColors.Length)];
 				button.primaryColor = color;

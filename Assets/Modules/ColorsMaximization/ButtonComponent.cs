@@ -36,7 +36,10 @@ public class ButtonComponent : MonoBehaviour {
 
 	private void OnChanged() {
 		if (!_colorblindMode || !_active) textMesh.text = "";
-		else textMesh.text = ColorsMaximizationModule.colorsName[_primaryColor].Substring(0, 1);
-		glass.material.SetColor("_Color", _colorblindMode || !_active ? Color.black : _primaryColor);
+		else {
+			textMesh.text = ColorsMaximizationModule.colorsName[_primaryColor].Substring(0, 1);
+			textMesh.color = Color.white - _primaryColor + Color.black;
+		}
+		glass.material.SetColor("_Color", _active ? _primaryColor : Color.black);
 	}
 }
