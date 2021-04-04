@@ -61,7 +61,21 @@ public class ColorsMaximizationModule : MonoBehaviour {
 		}
 	}
 
+	private int _submittedScore = -1;
+	public int submittedScore {
+		get { return _submittedScore; }
+	}
+
+	private HashSet<Color> _submittedColors;
+	public HashSet<Color> submittedColors {
+		get { return _submittedColors; }
+	}
+
 	private bool _passed = false;
+	public bool passed {
+		get { return _passed; }
+	}
+
 	private int _moduleId;
 	private List<ButtonComponent> _buttons = new List<ButtonComponent>();
 	private ButtonComponent[][] _buttonsGrid = new ButtonComponent[0][] { };
@@ -194,6 +208,10 @@ public class ColorsMaximizationModule : MonoBehaviour {
 		return null;
 	}
 
+	public int countOfColor(Color color) {
+		return _countOfColor[color];
+	}
+
 	private bool OnSubmitPressed() {
 		if (_passed) return false;
 		Color[] colors = GetOrderedColors();
@@ -211,17 +229,40 @@ public class ColorsMaximizationModule : MonoBehaviour {
 		int expectedScore = Mathf.Max(scores[colors.Length - 1], scores[colors.Length - 2]);
 		Debug.LogFormat("[Colors Maximization #{0}] Expected score: {1}", _moduleId, expectedScore);
 		int submitedScore = 0;
+		HashSet<Color> submittedColors = new HashSet<Color>();
 		foreach (ButtonComponent button in _buttons) {
 			if (!button.active) continue;
 			submitedScore += scoreOfColor[button.primaryColor];
+			submittedColors.Add(button.primaryColor);
 		}
 		Debug.LogFormat("[Colors Maximization #{0}] Submited score: {1}", _moduleId, submitedScore);
 		if (submitedScore == expectedScore) {
 			_passed = true;
+			_submittedScore = submitedScore;
+			_submittedColors = submittedColors;
 			GetComponent<KMBombModule>().HandlePass();
+			StartCoroutine(ShuffleKeys());
 		} else GetComponent<KMBombModule>().HandleStrike();
 		KMAudio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, this.transform);
 		return false;
+	}
+
+	private IEnumerator<object> ShuffleKeys() {
+		HashSet<Color> fakeSubmittedColors = getHalfRandomColors();
+		int[] keysNumbers = new int[WIDTH * HEIGHT].Select((_, i) => i).ToArray();
+		for (int i = 0; i < WIDTH * HEIGHT; i++) {
+			int temp = keysNumbers[i];
+			int rndIndex = Random.Range(0, WIDTH * HEIGHT);
+			keysNumbers[i] = keysNumbers[rndIndex];
+			keysNumbers[rndIndex] = temp;
+		}
+		foreach (int keyNumber in keysNumbers) {
+			Color color = allColors[Random.Range(0, allColors.Length)];
+			ButtonComponent button = _buttonsGrid[keyNumber % WIDTH][keyNumber / WIDTH];
+			button.primaryColor = color;
+			button.active = fakeSubmittedColors.Contains(color);
+			yield return new WaitForSeconds(.1f);
+		}
 	}
 
 	private void LogRule(int ruleNumber) {
