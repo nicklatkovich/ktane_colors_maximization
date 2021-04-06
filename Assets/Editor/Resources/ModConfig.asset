@@ -14,8 +14,13 @@ MonoBehaviour:
   id: colors_maximization
   title: Colors Maximization
   author: NickLatkovich
-  description: The module in which you need to find the colors combination that gives
-    the maximum score.
+  description: "[h1]About[/h1]\r\nThe module in which you need to find the colors
+    combination that gives the maximum score.\r\n\r\n[h1]Manual[/h1]\r\n[url=https://ktane.timwi.de/HTML/Colors%20Maximization.html]HTML[/url]\r\n[url=https://ktane.timwi.de/PDF/Colors%20Maximization.pdf]PDF[/url]\r\n\r\n[h1]Module
+    ID[/h1]\r\n[code]colors_maximization[/code]\r\n\r\n[h1]Twitch Plays implementation[/h1]\r\nPress
+    buttons by its coordinates:\r\n[code]\r\na1 b2 c3\r\n1;1 2;2 3;3\r\n[/code]\r\nor
+    using its number in reading order: [code]1 7 13[/code]\r\nPress \"submit\" button
+    using its label: [code]submit[/code]\r\nMultiple presses can be applied by one
+    command: [code]a1 2;2 13 submit[/code]\r\nEnable/disable colorblind mode: [code]colorblind[/code]\r\n"
   version: 0.1.0
   outputFolder: build
   previewImage: {fileID: 2800000, guid: ae1f294052d51f74482db24da60da234, type: 3}
