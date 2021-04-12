@@ -38,8 +38,9 @@ public class ColorsMaximizationModule : MonoBehaviour {
 	public const int HEIGHT = 4;
 
 	public readonly string TwitchHelpMessage = string.Join(" | ", new string[] {
-		"`!{0} a1 2;2 15 submit` - press buttons on coordinates, by number in reading order or with label `submit`",
-		"`!{0} colorblind` enable/disable colorblind mode",
+		"\"!{0} a1 2;2 15 submit\" to press buttons on coordinates, by number in reading order or with label SUBMIT",
+		"\"!{0} activate\" to activate all inactive keys",
+		"\"!{0} colorblind\" to enable/disable colorblind mode",
 	});
 
 	public ButtonComponent buttonPrefab;
@@ -75,6 +76,9 @@ public class ColorsMaximizationModule : MonoBehaviour {
 	public bool passed {
 		get { return _passed; }
 	}
+
+	private bool _forceSolved = false;
+	public bool forceSolved { get { return _forceSolved; } }
 
 	private int _moduleId;
 	private List<ButtonComponent> _buttons = new List<ButtonComponent>();
@@ -138,9 +142,30 @@ public class ColorsMaximizationModule : MonoBehaviour {
 			colorblindModeEnabled = !colorblindModeEnabled;
 			return new KMSelectable[0];
 		}
+		if (Regex.IsMatch(command, @"activate( *all)?")) {
+			Dictionary<Color, KMSelectable> keys = new Dictionary<Color, KMSelectable>();
+			for (int y = 0; y < HEIGHT; y++) {
+				for (int x = 0; x < WIDTH; x++) {
+					ButtonComponent button = _buttonsGrid[x][y];
+					if (!button.active && !keys.ContainsKey(button.primaryColor)) {
+						keys[button.primaryColor] = button.GetComponent<KMSelectable>();
+					}
+				}
+			}
+			return keys.Values.ToArray();
+		}
 		KMSelectable[] parsedCoords = parseButtonsSet(command);
 		if (parsedCoords != null) return parsedCoords;
 		return null;
+	}
+
+	public void TwitchHandleForcedSolve() {
+		if (_passed) return;
+		Debug.LogFormat("[Colors Maximization #{0}] Module force-solved", _moduleId);
+		_passed = true;
+		_forceSolved = true;
+		GetComponent<KMBombModule>().HandlePass();
+		StartCoroutine(ShuffleKeys());
 	}
 
 	public Color[] GetOrderedColors() {
@@ -177,6 +202,7 @@ public class ColorsMaximizationModule : MonoBehaviour {
 	}
 
 	public KMSelectable[] parseButtonsSet(string set) {
+		if (set.StartsWith("press ")) set = set.Skip(6).Join("");
 		string[] strings = set.Split(' ').Where(r => r.Length > 0).ToArray();
 		KMSelectable[] result = new KMSelectable[strings.Count()];
 		for (int i = 0; i < strings.Count(); i++) {
@@ -217,17 +243,32 @@ public class ColorsMaximizationModule : MonoBehaviour {
 		Color[] colors = GetOrderedColors();
 		Dictionary<Color, int> scoreOfColor = new Dictionary<Color, int>();
 		int[] scores = new int[6];
+		List<Color>[] answerExamples = new List<Color>[6];
 		for (int i = 0; i < colors.Length; i++) {
 			int score = i + 1;
 			Color color = colors[i];
 			scoreOfColor[color] = score;
 			int totalColorScore = score * _countOfColor[color];
 			scores[i] = totalColorScore;
-			if (i > 1) scores[i] += scores[i - 2];
-			if (i > 0) scores[i] = Mathf.Max(scores[i], scores[i - 1]);
+			answerExamples[i] = new List<Color> { color };
+			if (i > 1) {
+				scores[i] += scores[i - 2];
+				answerExamples[i].AddRange(answerExamples[i - 2]);
+			}
+			if (i > 0 && scores[i - 1] > scores[i]) {
+				scores[i] = scores[i - 1];
+				answerExamples[i] = new List<Color>(answerExamples[i - 1]);
+			}
 		}
-		int expectedScore = Mathf.Max(scores[colors.Length - 1], scores[colors.Length - 2]);
+		int expectedScore = scores[colors.Length - 1];
+		List<Color> answerExample = answerExamples[answerExamples.Length - 1];
+		if (scores[colors.Length - 2] > expectedScore) {
+			expectedScore = scores[colors.Length - 2];
+			answerExample = answerExamples[answerExamples.Length - 2];
+		}
 		Debug.LogFormat("[Colors Maximization #{0}] Expected score: {1}", _moduleId, expectedScore);
+		Debug.LogFormat("[Colors Maximization #{0}] Answer example: {1}", _moduleId,
+			answerExample.Select((c) => colorsName[c]).Join(","));
 		int submitedScore = 0;
 		HashSet<Color> submittedColors = new HashSet<Color>();
 		foreach (ButtonComponent button in _buttons) {
@@ -235,6 +276,9 @@ public class ColorsMaximizationModule : MonoBehaviour {
 			submitedScore += scoreOfColor[button.primaryColor];
 			submittedColors.Add(button.primaryColor);
 		}
+		LogColorsDifferenceCollision(scoreOfColor, submittedColors);
+		Debug.LogFormat("[Colors Maximization #{0}] Submited colors: {1}", _moduleId,
+			submittedColors.Select((c) => colorsName[c]).Join(","));
 		Debug.LogFormat("[Colors Maximization #{0}] Submited score: {1}", _moduleId, submitedScore);
 		if (submitedScore == expectedScore) {
 			_passed = true;
@@ -245,6 +289,20 @@ public class ColorsMaximizationModule : MonoBehaviour {
 		} else GetComponent<KMBombModule>().HandleStrike();
 		KMAudio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, this.transform);
 		return false;
+	}
+
+	private void LogColorsDifferenceCollision(Dictionary<Color, int> scoreOfColor, HashSet<Color> submittedColors) {
+		Color[] colors = submittedColors.ToArray();
+		for (int i = 0; i < colors.Length; i++) {
+			Color c1 = colors[i];
+			for (int j = i + 1; j < colors.Length; j++) {
+				Color c2 = colors[j];
+				if (Mathf.Abs(scoreOfColor[c1] - scoreOfColor[c2]) != 1) continue;
+				Debug.LogFormat(
+					"[Colors Maximization #{0}] Submited two colors with score difference of 1: {1} and {2}",
+					_moduleId, colorsName[c1], colorsName[c2]);
+			}
+		}
 	}
 
 	private IEnumerator<object> ShuffleKeys() {
