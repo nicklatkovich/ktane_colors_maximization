@@ -129,8 +129,8 @@ GameObject:
   - component: {fileID: 114664971240673866}
   - component: {fileID: 114448980960861612}
   - component: {fileID: 114119111285345498}
-  - component: {fileID: 114636403854835216}
   - component: {fileID: 114612393847298776}
+  - component: {fileID: 114636403854835216}
   m_Layer: 0
   m_Name: ColorsMaximization
   m_TagString: Untagged
@@ -696,14 +696,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a491457629f63614ca6eec38ffc9d73e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buttonPrefab: {fileID: 114965477264879690, guid: 038fa0737d75f9e48ac1ffbc0df23b4b,
+  ButtonsCollection: {fileID: 1708746245527062}
+  SubmitText: {fileID: 102225970408690444}
+  Audio: {fileID: 114119111285345498}
+  BombInfo: {fileID: 114448980960861612}
+  BombModule: {fileID: 114747122570955290}
+  ColorblindMode: {fileID: 114612393847298776}
+  SelfSelectable: {fileID: 114664971240673866}
+  SubmitButton: {fileID: 114401175276266382}
+  ButtonPrefab: {fileID: 114965477264879690, guid: 038fa0737d75f9e48ac1ffbc0df23b4b,
     type: 2}
-  submitButton: {fileID: 114401175276266382}
-  buttonsCollection: {fileID: 1708746245527062}
-  KMAudio: {fileID: 114119111285345498}
-  submitText: {fileID: 102225970408690444}
-  bomb: {fileID: 114448980960861612}
-  colorblindMode: {fileID: 114612393847298776}
 --- !u!114 &114664971240673866
 MonoBehaviour:
   m_ObjectHideFlags: 1

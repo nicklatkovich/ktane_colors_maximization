@@ -453,8 +453,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f847e642aa8e46347bf61bbfca6130dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  textMesh: {fileID: 102680833024561182}
-  glass: {fileID: 23054440405208954}
-  button: {fileID: 23737892887211504}
-  selectedShader: {fileID: 10755, guid: 0000000000000000f000000000000000, type: 0}
-  unselectedShader: {fileID: 2, guid: 0000000000000000f000000000000000, type: 0}
+  Text: {fileID: 102680833024561182}
+  Glass: {fileID: 23054440405208954}
+  Button: {fileID: 23737892887211504}
+  SelectedShader: {fileID: 10755, guid: 0000000000000000f000000000000000, type: 0}
+  UnselectedShader: {fileID: 2, guid: 0000000000000000f000000000000000, type: 0}
+  Selectable: {fileID: 114323732233042588}

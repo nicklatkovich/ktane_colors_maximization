@@ -1,13 +1,14 @@
 ﻿using UnityEngine;
 
 public class ButtonComponent : MonoBehaviour {
-	public static readonly Color DEFAULT_BUTTON_COLOR = new Color(.33f, .33f, .33f);
+	private static readonly Color DEFAULT_BUTTON_COLOR = new Color(.33f, .33f, .33f);
 
-	public TextMesh textMesh;
-	public Renderer glass;
-	public Renderer button;
-	public Shader selectedShader;
-	public Shader unselectedShader;
+	public TextMesh Text;
+	public Renderer Glass;
+	public Renderer Button;
+	public Shader SelectedShader;
+	public Shader UnselectedShader;
+	public KMSelectable Selectable;
 
 	private bool _colorblindMode = false;
 	public bool colorblindMode {
@@ -42,32 +43,31 @@ public class ButtonComponent : MonoBehaviour {
 	private bool selected = false;
 
 	private void Start() {
-		KMSelectable selfSelectable = GetComponent<KMSelectable>();
-		selfSelectable.OnHighlight += () => {
+		Selectable.OnHighlight += () => {
 			selected = true;
-			button.material.shader = selectedShader;
+			Button.material.shader = SelectedShader;
 			highlight();
 		};
-		selfSelectable.OnHighlightEnded += () => {
+		Selectable.OnHighlightEnded += () => {
 			selected = false;
-			button.material.shader = unselectedShader;
-			button.material.SetColor("_Color", DEFAULT_BUTTON_COLOR);
+			Button.material.shader = UnselectedShader;
+			Button.material.SetColor("_Color", DEFAULT_BUTTON_COLOR);
 		};
 	}
 
 	private void OnChanged() {
-		if (!_colorblindMode || !_active) textMesh.text = "";
+		if (!_colorblindMode || !_active) Text.text = "";
 		else {
-			textMesh.text = ColorsMaximizationModule.colorsName[_primaryColor].Substring(0, 1);
-			textMesh.color = negative(_primaryColor);
+			Text.text = ColorsMaximizationModule.colorNames[_primaryColor].Substring(0, 1);
+			Text.color = negative(_primaryColor);
 		}
 		if (selected) highlight();
-		glass.material.SetColor("_Color", _active ? _primaryColor : Color.black);
+		Glass.material.SetColor("_Color", _active ? _primaryColor : Color.black);
 	}
 
 	private void highlight() {
 		Color color = _active && _primaryColor != Color.white ? negative(_primaryColor) : Color.red;
-		button.material.SetColor("_Color", color);
+		Button.material.SetColor("_Color", color);
 	}
 
 	private Color negative(Color color) {

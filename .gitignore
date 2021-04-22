@@ -30,7 +30,7 @@ obj/
 Models/*
 
 # ColorsMaximization
-!Assets/Modules/ColorsMaximization.meta
-!Assets/Modules/ColorsMaximization
+!Assets/ColorsMaximization.meta
+!Assets/ColorsMaximization
 !Manual/img/Component/ColorsMaximization.svg
 !Models/ColorsMaximization.blend
