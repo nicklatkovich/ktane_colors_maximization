@@ -204,12 +204,12 @@ public class ColorsMaximizationModule : MonoBehaviour {
 			this._submittedColors = submittedColors;
 			_forceSolved = false;
 			BombModule.HandlePass();
+			Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.CorrectChime, this.transform);
 			StartCoroutine(ShuffleKeys());
 		} else {
 			Debug.LogFormat("[Colors Maximization #{0}] Submited score not equals expected score. Strike", moduleId);
 			BombModule.HandleStrike();
 		}
-		Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, this.transform);
 		return false;
 	}
 

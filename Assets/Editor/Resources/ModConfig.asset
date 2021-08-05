@@ -21,6 +21,6 @@ MonoBehaviour:
     using its number in reading order: [code]1 7 13[/code]\r\nPress \"submit\" button
     using its label: [code]submit[/code]\r\nMultiple presses can be applied by one
     command: [code]a1 2;2 13 submit[/code]\r\nEnable/disable colorblind mode: [code]colorblind[/code]\r\n"
-  version: 0.2.0
+  version: 1.0.0
   outputFolder: build
   previewImage: {fileID: 2800000, guid: ae1f294052d51f74482db24da60da234, type: 3}
