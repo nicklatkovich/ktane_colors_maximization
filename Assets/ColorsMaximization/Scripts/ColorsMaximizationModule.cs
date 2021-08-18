@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -99,6 +100,7 @@ public class ColorsMaximizationModule : MonoBehaviour {
 	private HashSet<Color> _submittedColors;
 	public HashSet<Color> submittedColors { get { return new HashSet<Color>(_submittedColors); } }
 
+	private bool activated = false;
 	private bool answerIsDynamic = false;
 	private bool solved = false;
 	private int moduleId;
@@ -168,6 +170,7 @@ public class ColorsMaximizationModule : MonoBehaviour {
 			ButtonComponent closure = button;
 			button.Selectable.OnInteract += () => OnButtonPressed(closure);
 		}
+		activated = true;
 	}
 
 	private bool OnButtonPressed(ButtonComponent button) {
@@ -213,13 +216,19 @@ public class ColorsMaximizationModule : MonoBehaviour {
 		return false;
 	}
 
-	private KMSelectable[] ProcessTwitchCommand(string command) {
+	public IEnumerator ProcessTwitchCommand(string command) {
+		if (!activated) {
+			yield return "sendtochat {0}, !{1} not activated";
+			yield break;
+		}
 		command = command.Trim().ToLower();
 		if (command == "colorblind") {
+			yield return null;
 			colorblindModeEnabled = !colorblindModeEnabled;
-			return new KMSelectable[0];
+			yield break;
 		}
-		if (Regex.IsMatch(command, @"activate( *all)?")) {
+		if (Regex.IsMatch(command, @"^activate( *all)?$")) {
+			yield return null;
 			Dictionary<Color, KMSelectable> keys = new Dictionary<Color, KMSelectable>();
 			for (int y = 0; y < HEIGHT; y++) {
 				for (int x = 0; x < WIDTH; x++) {
@@ -227,11 +236,15 @@ public class ColorsMaximizationModule : MonoBehaviour {
 					if (!button.active && !keys.ContainsKey(button.primaryColor)) keys[button.primaryColor] = button.GetComponent<KMSelectable>();
 				}
 			}
-			return keys.Values.ToArray();
+			yield return keys.Values.ToArray();
+			yield break;
 		}
 		KMSelectable[] parsedCoords = ParseButtonsSet(command);
-		if (parsedCoords != null) return parsedCoords;
-		return null;
+		if (parsedCoords != null) {
+			yield return null;
+			yield return parsedCoords;
+			yield break;
+		}
 	}
 
 	private void TwitchHandleForcedSolve() {
@@ -271,11 +284,11 @@ public class ColorsMaximizationModule : MonoBehaviour {
 
 	private KMSelectable ParseButton(string str) {
 		if (str == "submit") return SubmitButton;
-		Match match = Regex.Match(str, @"([a-e])([1-4])");
+		Match match = Regex.Match(str, @"^([a-e])([1-4])$");
 		if (match.Success) return buttonsGrid[match.Groups[1].Value[0] - 'a'][int.Parse(match.Groups[2].Value) - 1].Selectable;
-		match = Regex.Match(str, @"([1-5])[;,]([1-4])");
+		match = Regex.Match(str, @"^([1-5])[;,]([1-4])$");
 		if (match.Success) return buttonsGrid[int.Parse(match.Groups[1].Value) - 1][int.Parse(match.Groups[2].Value) - 1].Selectable;
-		if (Regex.IsMatch(str, @"0|[1-9]\d*")) {
+		if (Regex.IsMatch(str, @"^0|[1-9]\d*$")) {
 			int index = int.Parse(str) - 1;
 			int row = index / WIDTH;
 			if (row >= HEIGHT) return null;
