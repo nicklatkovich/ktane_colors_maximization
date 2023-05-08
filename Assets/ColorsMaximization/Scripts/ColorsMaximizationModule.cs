@@ -160,10 +160,10 @@ public class ColorsMaximizationModule : MonoBehaviour {
 			answerIsDynamic = true;
 			Debug.LogFormat("[Colors Maximization #{0}] Rule is dynamic", moduleId);
 			Debug.LogFormat("[Colors Maximization #{0}] When rule #5 is used:", moduleId);
-			Debug.LogFormat("[Colors Maximization #{0}] \tColors sorted by score: {1}", moduleId, rules[5].Select(c => colorNames[c]).Join(","));
+			Debug.LogFormat("[Colors Maximization #{0}] \tColors sorted by score: {1}", moduleId, rules[4].Select(c => colorNames[c]).Join(","));
 			GetExpectedScore(5, true);
 			Debug.LogFormat("[Colors Maximization #{0}] When rule #6 is used:", moduleId);
-			Debug.LogFormat("[Colors Maximization #{0}] \tColors sorted by score: {1}", moduleId, rules[6].Select(c => colorNames[c]).Join(","));
+			Debug.LogFormat("[Colors Maximization #{0}] \tColors sorted by score: {1}", moduleId, rules[5].Select(c => colorNames[c]).Join(","));
 			GetExpectedScore(6, true);
 		}
 		foreach (ButtonComponent button in buttons) {
