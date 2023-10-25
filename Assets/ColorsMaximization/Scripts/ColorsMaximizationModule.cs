@@ -352,8 +352,4 @@ public class ColorsMaximizationModule : MonoBehaviour {
 			}
 		}
 	}
-
-	private void LogRule(int ruleNumber) {
-		Debug.LogFormat("[Colors Maximization #{0}] Using rule #{1}", moduleId, ruleNumber);
-	}
 }
