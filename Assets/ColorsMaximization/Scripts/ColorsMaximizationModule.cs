@@ -160,10 +160,10 @@ public class ColorsMaximizationModule : MonoBehaviour {
 			answerIsDynamic = true;
 			Debug.LogFormat("[Colors Maximization #{0}] Rule is dynamic", moduleId);
 			Debug.LogFormat("[Colors Maximization #{0}] When rule #5 is used:", moduleId);
-			Debug.LogFormat("[Colors Maximization #{0}] \tColors sorted by score: {1}", moduleId, rules[5].Select(c => colorNames[c]).Join(","));
+			Debug.LogFormat("[Colors Maximization #{0}] \tColors sorted by score: {1}", moduleId, rules[4].Select(c => colorNames[c]).Join(","));
 			GetExpectedScore(5, true);
 			Debug.LogFormat("[Colors Maximization #{0}] When rule #6 is used:", moduleId);
-			Debug.LogFormat("[Colors Maximization #{0}] \tColors sorted by score: {1}", moduleId, rules[6].Select(c => colorNames[c]).Join(","));
+			Debug.LogFormat("[Colors Maximization #{0}] \tColors sorted by score: {1}", moduleId, rules[5].Select(c => colorNames[c]).Join(","));
 			GetExpectedScore(6, true);
 		}
 		foreach (ButtonComponent button in buttons) {
@@ -289,7 +289,9 @@ public class ColorsMaximizationModule : MonoBehaviour {
 		match = Regex.Match(str, @"^([1-5])[;,]([1-4])$");
 		if (match.Success) return buttonsGrid[int.Parse(match.Groups[1].Value) - 1][int.Parse(match.Groups[2].Value) - 1].Selectable;
 		if (Regex.IsMatch(str, @"^0|[1-9]\d*$")) {
-			int index = int.Parse(str) - 1;
+			int index;
+			if (!int.TryParse(str, out index) || index <= 0) return null;
+			index--;
 			int row = index / WIDTH;
 			if (row >= HEIGHT) return null;
 			return buttonsGrid[index % WIDTH][row].Selectable;
